@@ -9,7 +9,6 @@ exports.getPublishedPosts = async (req, res, next) => {
   } catch(err) {
     return res.sendStatus(503);
   }
-
 }
 
 exports.getAllPosts = async (req, res, next) => {
@@ -97,7 +96,7 @@ exports.updatePost = [
 
 exports.deletePost = async (req, res, next) => {
   try {
-    await Post.findByIdAndRemove(req.params.id);
+    await Promise.all([Post.findByIdAndRemove(req.params.id), Comment.deleteMany({post: req.params.id})]);
     return res.status(200).send('Deleted successfully');
   } catch(err) {
     return res.sendStatus(503);
